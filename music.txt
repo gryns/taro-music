@@ -1,0 +1,12 @@
+http://ganto.xyz/vue/
+
+
+开放API接口
+查询歌曲接口
+    https://autumnfish.cn/search?keywords=${song} song: 歌手  get  
+获取歌曲（MP3格式）
+    https://autumnfish.cn/song/url?id=${id}  id: id get
+获取歌曲详情
+    https://autumnfish.cn/song/detail?ids=${id} get
+获取歌词
+    https://autumnfish.cn/lyric?id=${id} get
