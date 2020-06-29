@@ -10,36 +10,36 @@ import './index.less'
 @connect(({ counter }) => ({
   counter
 }), (dispatch) => ({
-  add() {
+  add () {
     dispatch(add())
   },
-  dec() {
+  dec () {
     dispatch(minus())
   },
-  asyncAdd() {
+  asyncAdd () {
     dispatch(asyncAdd())
   }
 }))
 class Index extends Component {
 
-  config = {
+    config = {
     navigationBarTitleText: '首页'
   }
 
-  componentWillReceiveProps(nextProps) {
+  componentWillReceiveProps (nextProps) {
     console.log(this.props, nextProps)
   }
 
-  componentWillUnmount() { }
+  componentWillUnmount () { }
 
-  componentDidShow() { }
+  componentDidShow () { }
 
-  componentDidHide() { }
+  componentDidHide () { }
 
-  render() {
+  render () {
     return (
       <View className='index'>
-        <Text className='title'>开始编写音乐播放器</Text>
+        <Text>音乐播放器</Text>
       </View>
     )
   }

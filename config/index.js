@@ -1,6 +1,6 @@
 const config = {
-  projectName: 'app-test',
-  date: '2020-5-8',
+  projectName: 'taro-test',
+  date: '2020-6-29',
   designWidth: 750,
   deviceRatio: {
     '640': 2.34 / 2,
@@ -21,12 +21,25 @@ const config = {
       'transform-class-properties',
       'transform-object-rest-spread',
       ['transform-runtime', {
-          helpers: false,
-          polyfill: false,
-          regenerator: true,
-          moduleName: 'babel-runtime'
-        }
+        helpers: false,
+        polyfill: false,
+        regenerator: true,
+        moduleName: 'babel-runtime'
+      }
       ]
+    ]
+  },
+  plugins: [
+    '@tarojs/plugin-less',
+    '@tarojs/plugin-terser',
+    '@tarojs/plugin-sass'
+  ],
+  copy: {
+    patterns: [
+      {
+        from: 'src/sitemap.json',
+        to: 'dist/sitemap.json'
+      }
     ]
   },
   defineConstants: {
