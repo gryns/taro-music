@@ -1,59 +1,80 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Button, Text } from '@tarojs/components'
+import { View, Text } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
-import { add, minus, asyncAdd } from '../../actions/counter'
+import { add, minus, asyncAdd } from '@/actions/counter'
 
 import './index.less'
 
-import {searchMusic} from "@/api"
+import { searchMusic } from "@/api"
+import { AtSearchBar } from 'taro-ui'
 
 
 @connect(({ counter }) => ({
   counter
 }), (dispatch) => ({
-  add () {
+  add() {
     dispatch(add())
   },
-  dec () {
+  dec() {
     dispatch(minus())
   },
-  asyncAdd () {
+  asyncAdd() {
     dispatch(asyncAdd())
   }
 }))
 class Index extends Component {
 
-    config = {
+  state = {
+    searchValue: ""
+  }
+
+  config = {
     navigationBarTitleText: '首页'
   }
 
-  componentWillReceiveProps (nextProps) {
+  componentWillReceiveProps(nextProps) {
     console.log(this.props, nextProps)
   }
 
-  componentWillUnmount () { }
-
   // 获取歌手的数据
-  getMusicData = async (name) =>{
+  getMusicData = async (name) => {
     try {
       const data = await searchMusic(name);
       console.log(data);
-      
+
     } catch (error) {
       console.log(error);
     }
   }
 
-  componentDidMount(){
+  // input onchange
+  handleChange = (value) => {
+    this.setState({
+      searchValue: value
+    })
+  }
+
+  componentDidMount() {
     // 查询歌手
     // this.getMusicData("七年")
   }
 
-  render () {
+  handleSearch = () => {
+    const { searchValue } = this.state;
+    this.getMusicData(searchValue);
+  }
+
+  render() {
+    const { searchValue } = this.state
     return (
       <View className='index'>
-        <Text>音乐播放器</Text>
+        <AtSearchBar
+          showActionButton
+          value={searchValue}
+          onChange={this.handleChange}
+          onActionClick={this.handleSearch}
+        />
       </View>
     )
   }
