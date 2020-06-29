@@ -6,6 +6,8 @@ import { add, minus, asyncAdd } from '../../actions/counter'
 
 import './index.less'
 
+import {searchMusic} from "@/api"
+
 
 @connect(({ counter }) => ({
   counter
@@ -32,9 +34,21 @@ class Index extends Component {
 
   componentWillUnmount () { }
 
-  componentDidShow () { }
+  // 获取歌手的数据
+  getMusicData = async (name) =>{
+    try {
+      const data = await searchMusic(name);
+      console.log(data);
+      
+    } catch (error) {
+      console.log(error);
+    }
+  }
 
-  componentDidHide () { }
+  componentDidMount(){
+    // 查询歌手
+    // this.getMusicData("七年")
+  }
 
   render () {
     return (

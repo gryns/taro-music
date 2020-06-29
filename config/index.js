@@ -42,6 +42,9 @@ const config = {
       }
     ]
   },
+  alias: {
+    "@": "src"
+  },
   defineConstants: {
   },
   mini: {
