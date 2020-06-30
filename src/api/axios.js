@@ -1,8 +1,5 @@
 import axios from 'axios'
 import Taro from "@tarojs/taro"
-import settle from "axios/lib/core/settle"
-import request from "./request"
-import qs from 'qs'
 
 const URL = "https://autumnfish.cn";
 
@@ -13,19 +10,6 @@ let http = axios.create({
     headers: {
         'Content-Type': 'application/json',
     },
-    // adapter: config => {
-    //     console.log(config);
-    //     // 调用默认请求接口, 发送正常请求及返回
-    //     if (!config.data) {
-
-    //         // 删除配置中的 adapter, 使用默认值
-    //         delete config.adapter
-
-    //         // 通过配置发起请求
-    //         return axios(config)
-
-    //     }
-    // }
 })
 
 //app真机获取

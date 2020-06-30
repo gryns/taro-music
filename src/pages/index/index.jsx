@@ -7,7 +7,9 @@ import { add, minus, asyncAdd } from '@/actions/counter'
 import './index.less'
 
 import { searchMusic } from "@/api"
-import { AtSearchBar  , AtList  , AtListItem , AtToast  } from 'taro-ui'
+import { AtSearchBar, AtList, AtListItem, AtToast } from 'taro-ui'
+
+import BannerPage from "./components/banner"
 
 
 @connect(({ counter }) => ({
@@ -27,7 +29,7 @@ class Index extends Component {
 
   state = {
     searchValue: "",
-    listData:[],
+    listData: [],
     dataLoading: false,
   }
 
@@ -41,11 +43,13 @@ class Index extends Component {
       dataLoading: true
     })
     try {
-      const data = await searchMusic(name);
-      console.log(data);
+      const params = {
+        keywords: name,
+      }
+      const data = await searchMusic(params);
       this.setState({
-        listData: data.songs,
-        dataLoading:false
+        listData: data.result.songs,
+        dataLoading: false
       })
     } catch (error) {
       console.log(error);
@@ -65,10 +69,10 @@ class Index extends Component {
   }
 
   // 渲染列表数据
-  renderListData = ()=>{
-    const {listData} = this.state;
-    if(listData.length === 0) return null;
-    return listData.map(item =>{
+  renderListData = () => {  
+    const { listData } = this.state;
+    if (listData.length === 0) return null;
+    return listData.map(item => {
       return <AtListItem key={item.id} title={item.name} />
     })
   }
@@ -79,14 +83,14 @@ class Index extends Component {
     this.getMusicData(searchValue);
   }
 
-  handleLick = ()=>{
+  handleLick = () => {
     Taro.switchTab({
-      url:"/pages/list/list"
+      url: "/pages/list/list"
     })
   }
 
   render() {
-    const { searchValue , dataLoading } = this.state
+    const { searchValue, dataLoading } = this.state
     return (
       <View className='index'>
         <AtSearchBar
@@ -96,7 +100,8 @@ class Index extends Component {
           onActionClick={this.handleSearch}
           className="search"
         />
-        <View style={{height:"42px"}}></View>
+        <View style={{ height: "42px" }}></View>
+        <BannerPage />
         <AtList>
           {this.renderListData()}
         </AtList>
