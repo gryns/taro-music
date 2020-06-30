@@ -1,31 +1,80 @@
 import axios from 'axios'
+import Taro from "@tarojs/taro"
+import settle from "axios/lib/core/settle"
+import request from "./request"
+import qs from 'qs'
 
-//  测试地址
-axios.defaults.baseURL = "https://autumnfish.cn"
+const URL = "https://autumnfish.cn";
 
-axios.defaults.timeout = 10000;
+// 创建一个接口实例
+let http = axios.create({
+    timeout: 10000,
+    baseURL: URL,
+    headers: {
+        'Content-Type': 'application/json',
+    },
+    // adapter: config => {
+    //     console.log(config);
+    //     // 调用默认请求接口, 发送正常请求及返回
+    //     if (!config.data) {
+
+    //         // 删除配置中的 adapter, 使用默认值
+    //         delete config.adapter
+
+    //         // 通过配置发起请求
+    //         return axios(config)
+
+    //     }
+    // }
+})
+
+//app真机获取
+http.defaults.adapter = function (config) {
+    return new Promise((resolve, reject) => {
+        var settle = require('axios/lib/core/settle');
+        var buildURL = require('axios/lib/helpers/buildURL');
+        Taro.request({
+            method: config.method.toUpperCase(),
+            url: buildURL(URL + config.url, config.params),
+            header: config.headers,
+            data: config.data,
+            responseType: config.responseType,
+            complete: function complete(response) {
+                response = {
+                    data: response.data,
+                    status: response.statusCode,
+                    errMsg: response.errMsg,
+                    header: response.header,
+                    config: config
+                };
+                settle(resolve, reject, response)
+            }
+        })
+    })
+}
+
 
 // 请求拦截
-axios.interceptors.request.use(
+http.interceptors.request.use(
     config => {
         return config
     },
-    error => Promise.reject(error)
+    error => Promise.reject(error),
 )
 
 // 响应拦截
 
-axios.interceptors.response.use(
+http.interceptors.response.use(
     res => {
         if (res.status === 200) {
             return Promise.resolve(res.data)
         } else {
-            return Promise.reject(res.data)
+            return Promise.resolve(res.data)
         }
     },
     err => {
         return Promise.reject(err)
-    }
+    },
 )
 
-export default axios
+export default http

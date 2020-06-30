@@ -1,19 +1,23 @@
 @import "../../common/common.less";
 html,
 body {
-  background-color: #dddddd;
+  background-color: @colorffe;
 }
 .index {
   flex-direction: column;
   max-width: 750px;
-  // background: url(../../images/index-bg.jpg) no-repeat center center;
-  // background-size: 100% 100%;
-  background-color: #2ab2ab;
+  background-color: @colorffe;
   height: 100vh;
   margin: 0 auto 0;
-  padding:  0 30px 0;
+  padding: 0 @distance 0;
+  .search{
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    z-index: 10;
+  }
   span {
     font-size: 28px;
-    color: @colorffe;
   }
 }

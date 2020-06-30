@@ -1,5 +1,5 @@
 import Taro, { Component } from '@tarojs/taro'
-import { View, Text } from '@tarojs/components'
+import { View } from '@tarojs/components'
 import { connect } from '@tarojs/redux'
 
 import { add, minus, asyncAdd } from '@/actions/counter'
@@ -7,7 +7,7 @@ import { add, minus, asyncAdd } from '@/actions/counter'
 import './index.less'
 
 import { searchMusic } from "@/api"
-import { AtSearchBar } from 'taro-ui'
+import { AtSearchBar  , AtList  , AtListItem , AtToast  } from 'taro-ui'
 
 
 @connect(({ counter }) => ({
@@ -26,23 +26,27 @@ import { AtSearchBar } from 'taro-ui'
 class Index extends Component {
 
   state = {
-    searchValue: ""
+    searchValue: "",
+    listData:[],
+    dataLoading: false,
   }
 
   config = {
     navigationBarTitleText: '首页'
   }
 
-  componentWillReceiveProps(nextProps) {
-    console.log(this.props, nextProps)
-  }
-
   // 获取歌手的数据
   getMusicData = async (name) => {
+    this.setState({
+      dataLoading: true
+    })
     try {
       const data = await searchMusic(name);
       console.log(data);
-
+      this.setState({
+        listData: data.songs,
+        dataLoading:false
+      })
     } catch (error) {
       console.log(error);
     }
@@ -57,16 +61,32 @@ class Index extends Component {
 
   componentDidMount() {
     // 查询歌手
-    // this.getMusicData("七年")
+    this.getMusicData("七年")
   }
 
+  // 渲染列表数据
+  renderListData = ()=>{
+    const {listData} = this.state;
+    if(listData.length === 0) return null;
+    return listData.map(item =>{
+      return <AtListItem key={item.id} title={item.name} />
+    })
+  }
+
+  // 查询歌手
   handleSearch = () => {
     const { searchValue } = this.state;
     this.getMusicData(searchValue);
   }
 
+  handleLick = ()=>{
+    Taro.switchTab({
+      url:"/pages/list/list"
+    })
+  }
+
   render() {
-    const { searchValue } = this.state
+    const { searchValue , dataLoading } = this.state
     return (
       <View className='index'>
         <AtSearchBar
@@ -74,7 +94,16 @@ class Index extends Component {
           value={searchValue}
           onChange={this.handleChange}
           onActionClick={this.handleSearch}
+          className="search"
         />
+        <View style={{height:"42px"}}></View>
+        <AtList>
+          {this.renderListData()}
+        </AtList>
+        {
+          dataLoading && <AtToast text="加载中..." status="loading" duration={0} isOpened={dataLoading} />
+        }
+
       </View>
     )
   }
