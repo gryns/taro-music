@@ -1,47 +1,72 @@
-import { useState, useEffect } from '@tarojs/taro'
-import { Swiper, SwiperItem, View } from '@tarojs/components'
-import { recommendSong } from "@/api"
-function Recommend() {
+import { recommendSong } from '@/api'
+import { AtList, AtListItem, AtToast } from 'taro-ui'
+import { View, Text } from '@tarojs/components'
+import './index.less'
+import 'taro-ui/dist/style/components/flex.scss'
+class Recommend extends Taro.Component {
+	state = {
+		loading: false,
+		listData: []
+	}
 
-    const [bannerData, setBannerData] = useState([]);
+	// 获取推荐 数据
+	getRecommendData = async () => {
+		this.setState({
+			loading: true
+		})
+		try {
+			const params = {
+				limit: 9
+			}
+			const data = await recommendSong(params)
+			console.log(data)
+			this.setState({
+				listData: data.result
+			})
+		} catch (error) {
+			console.log(error)
+		} finally {
+			this.setState({
+				loading: false
+			})
+		}
+	}
 
-    useEffect(() => {
-        getRecommendData()
-    }, [])
+	// 渲染推荐数据
+	renderListData = () => {
+		const { listData } = this.state
+		return listData.map((item) => {
+			return (
+				<View className="at-col at-col-4 view-flex" key={item.id}>
+					<View>
+						{process.env.TARO_ENV === 'weapp' && (
+							<Image className="image" src={item.picUrl} alt="图片" />
+						)}
+						{process.env.TARO_ENV === 'h5' && (
+							<img className="image" src={item.picUrl} alt="图片" />
+						)}
+					</View>
+					<View>
+						<Text className="textOverflow">{item.name}</Text>
+					</View>
+				</View>
+			)
+		})
+	}
 
+	componentDidMount() {
+		// 获取推荐数据
+		this.getRecommendData()
+	}
 
-    // 获取推荐 数据
-    const getRecommendData = async () => {
-        try {
-            const data = await recommendSong();
-            console.log(data);
-            
-            setBannerData(data.banners)
-        } catch (error) {
-            console.log(error);
-
-        }
-    }
-
-    // 渲染推荐数据
-    const renderData = () => {
-        if (bannerData.length && bannerData.length !== 0) {
-            return bannerData.map(item => {
-                return <SwiperItem key={item.bannerId}>
-                    <View>
-                        <img style={{width:"100%"}} src={item.pic} alt="banner"/>
-                    </View>
-                </SwiperItem>
-            })
-        }
-    }
-
-    return (
-        <Swiper>
-            {
-                renderData()
-            }
-        </Swiper>
-    )
+	render() {
+		const { loading } = this.state
+		return (
+			<View>
+				<View className="at-row at-row--wrap at-row__justify--around">{this.renderListData()}</View>
+				{loading && <AtToast text="加载中..." status="loading" isOpened={true} />}
+			</View>
+		)
+	}
 }
 export default Recommend
