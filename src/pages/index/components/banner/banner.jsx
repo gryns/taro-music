@@ -52,7 +52,7 @@ class BannerPage extends Taro.Component {
 
     render() {
         return (
-            <Swiper className="banner">
+            <Swiper className="banner" autoplay={true}>
                 {
                     this.renderBannerData()
 

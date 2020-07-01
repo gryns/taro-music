@@ -38,7 +38,7 @@ class App extends Component {
         selectedIconPath:"./icon/homed.png"
       }, {
         "pagePath": "pages/list/list",
-        "text": "列表",
+        "text": "搜索",
         iconPath:"./icon/list.png",
         selectedIconPath:"./icon/listed.png"
       }]

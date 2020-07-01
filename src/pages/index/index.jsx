@@ -7,7 +7,6 @@ import { add, minus, asyncAdd } from '@/actions/counter'
 import './index.less'
 
 import { searchMusic } from '@/api'
-import { AtSearchBar } from 'taro-ui'
 
 import BannerPage from './components/banner'
 import RecommendPage from './components/recommend'
@@ -29,9 +28,6 @@ import RecommendPage from './components/recommend'
 	})
 )
 class Index extends Component {
-	state = {
-		searchValue: '',
-	}
 
 	config = {
 		navigationBarTitleText: '首页'
@@ -56,39 +52,11 @@ class Index extends Component {
 		}
 	}
 
-	// input onchange
-	handleChange = (value) => {
-		this.setState({
-			searchValue: value
-		})
-	}
-
-	// 查询歌手
-	handleSearch = () => {
-		const { searchValue } = this.state
-		this.getMusicData(searchValue)
-	}
-
-	handleLick = () => {
-		Taro.switchTab({
-			url: '/pages/list/list'
-		})
-	}
-
 	render() {
-		const { searchValue, dataLoading } = this.state
 		return (
 			<View className="index">
-				<AtSearchBar
-					showActionButton
-					value={searchValue}
-					onChange={this.handleChange}
-					onActionClick={this.handleSearch}
-					className="search"
-				/>
-				<View style={{ height: '42px' }}></View>
 				<BannerPage />
-        <h4>热门推荐</h4>
+				<View className="h4">热门推荐</View>
 				<RecommendPage />
 			</View>
 		)

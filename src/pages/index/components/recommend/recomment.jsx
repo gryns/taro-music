@@ -1,8 +1,9 @@
 import { recommendSong } from '@/api'
-import { AtList, AtListItem, AtToast } from 'taro-ui'
+import { AtToast } from 'taro-ui'
 import { View, Text } from '@tarojs/components'
 import './index.less'
 import 'taro-ui/dist/style/components/flex.scss'
+import LoadingPage from "@/components/PageLoading"
 class Recommend extends Taro.Component {
 	state = {
 		loading: false,
@@ -64,7 +65,7 @@ class Recommend extends Taro.Component {
 		return (
 			<View>
 				<View className="at-row at-row--wrap at-row__justify--around">{this.renderListData()}</View>
-				{loading && <AtToast text="加载中..." status="loading" isOpened={true} />}
+				{loading && <LoadingPage />}
 			</View>
 		)
 	}
