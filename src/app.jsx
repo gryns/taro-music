@@ -22,7 +22,8 @@ class App extends Component {
   config = {
     pages: [
       'pages/index/index',
-      'pages/list/list'
+      'pages/list/list',
+      'pages/mv/mv'
     ],
     window: {
       backgroundTextStyle: 'light',
@@ -41,6 +42,11 @@ class App extends Component {
         "text": "搜索",
         iconPath:"./icon/list.png",
         selectedIconPath:"./icon/listed.png"
+      },{
+        "pagePath": "pages/mv/mv",
+        "text": "MV",
+        iconPath:"./icon/mv.png",
+        selectedIconPath:"./icon/mved.png"
       }]
     },
   }

@@ -1,6 +1,6 @@
 import request from './request'
 
-// banber 接口
+// banber 接口 发现音乐
 /**
  * type : 0:pc , 1:android , 2: iphone , 3: ipad
  * **/
