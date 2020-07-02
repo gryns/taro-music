@@ -23,6 +23,10 @@ export const recommendSong = (params) => request('/personalized', params, 'GET')
 export const newestSong = (params) => request('/top/song', params, 'GET')
 
 // 根据歌手名字查询
+/***
+ * @params keywords: 歌手名字
+ * 
+*/
 export const searchMusic = (params) => request(`/search`, params, 'GET')
 
 // 获取歌曲 MP3

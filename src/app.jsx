@@ -1,9 +1,7 @@
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
-
+import store from './store'
 import Index from './pages/index'
-
-import configStore from './store'
 
 import './app.less'
 
@@ -15,59 +13,49 @@ import 'taro-ui/dist/style/index.scss' // 全局引入一次即可
 //   require('nerv-devtools')
 // }
 
-const store = configStore()
-
 class App extends Component {
+	config = {
+		pages: ['pages/index/index', 'pages/list/list', 'pages/mv/mv', 'pages/play/play'],
+		window: {
+			backgroundTextStyle: 'light',
+			navigationBarBackgroundColor: '#fff',
+			navigationBarTitleText: 'WeChat',
+			navigationBarTextStyle: 'black'
+		},
+		tabBar: {
+			list: [
+				{
+					pagePath: 'pages/index/index',
+					text: '首页',
+					iconPath: './icon/home.png',
+					selectedIconPath: './icon/homed.png'
+				},
+				{
+					pagePath: 'pages/list/list',
+					text: '搜索',
+					iconPath: './icon/list.png',
+					selectedIconPath: './icon/listed.png'
+				},
+				{
+					pagePath: 'pages/mv/mv',
+					text: 'MV',
+					iconPath: './icon/mv.png',
+					selectedIconPath: './icon/mved.png'
+				}
+			]
+		},
+		requiredBackgroundModes: ['audio', 'location']
+	}
 
-  config = {
-    pages: [
-      'pages/index/index',
-      'pages/list/list',
-      'pages/mv/mv'
-    ],
-    window: {
-      backgroundTextStyle: 'light',
-      navigationBarBackgroundColor: '#fff',
-      navigationBarTitleText: 'WeChat',
-      navigationBarTextStyle: 'black'
-    },
-    "tabBar": {
-      "list": [{
-        "pagePath": "pages/index/index",
-        "text": "首页",
-        iconPath:"./icon/home.png",
-        selectedIconPath:"./icon/homed.png"
-      }, {
-        "pagePath": "pages/list/list",
-        "text": "搜索",
-        iconPath:"./icon/list.png",
-        selectedIconPath:"./icon/listed.png"
-      },{
-        "pagePath": "pages/mv/mv",
-        "text": "MV",
-        iconPath:"./icon/mv.png",
-        selectedIconPath:"./icon/mved.png"
-      }]
-    },
-  }
-
-  componentDidMount() { }
-
-  componentDidShow() { }
-
-  componentDidHide() { }
-
-  componentDidCatchError() { }
-
-  // 在 App 类中的 render() 函数没有实际作用
-  // 请勿修改此函数
-  render() {
-    return (
-      <Provider store={store}>
-        <Index />
-      </Provider>
-    )
-  }
+	// 在 App 类中的 render() 函数没有实际作用
+	// 请勿修改此函数
+	render() {
+		return (
+			<Provider store={store}>
+				<Index />
+			</Provider>
+		)
+	}
 }
 
 Taro.render(<App />, document.getElementById('app'))

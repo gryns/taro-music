@@ -1,9 +1,20 @@
 import { recommendSong } from '@/api'
-import { AtToast } from 'taro-ui'
 import { View, Text } from '@tarojs/components'
 import './index.less'
 import 'taro-ui/dist/style/components/flex.scss'
-import LoadingPage from "@/components/PageLoading"
+import LoadingPage from '@/components/PageLoading'
+import { connect } from '@tarojs/redux'
+
+const mapStateToProps = (state) => ({
+	storeMusicId: state.music.storeMusicId,
+	storeNewAudio: state.music.storeNewAudio
+})
+
+const mapStateDispatchToProps = (dispatch) => ({
+	handleStoreMusic: dispatch.music.handleStoreMusic,
+	handleStoreMusicDetail: dispatch.music.handleStoreMusicDetail
+})
+@connect(mapStateToProps, mapStateDispatchToProps)
 class Recommend extends Taro.Component {
 	state = {
 		loading: false,
@@ -20,7 +31,6 @@ class Recommend extends Taro.Component {
 				limit: 9
 			}
 			const data = await recommendSong(params)
-			console.log(data)
 			this.setState({
 				listData: data.result
 			})
@@ -38,7 +48,10 @@ class Recommend extends Taro.Component {
 		const { listData } = this.state
 		return listData.map((item) => {
 			return (
-				<View className="at-col at-col-4 view-flex" key={item.id}>
+				<View
+					className="at-col at-col-4 view-flex"
+					key={item.id}
+				>
 					<View>
 						{process.env.TARO_ENV === 'weapp' && (
 							<Image className="image" src={item.picUrl} alt="图片" />
@@ -52,6 +65,19 @@ class Recommend extends Taro.Component {
 					</View>
 				</View>
 			)
+		})
+	}
+
+	// 跳转播放页面
+	getCurrentData = (item) => {
+		const { handleStoreMusic, storeNewAudio, handleStoreMusicDetail } = this.props
+		if (storeNewAudio) {
+			storeNewAudio.destroy()
+		}
+		handleStoreMusic(item.id)
+		handleStoreMusicDetail(item)
+		Taro.navigateTo({
+			url: '/pages/play/play'
 		})
 	}
 
