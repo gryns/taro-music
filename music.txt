@@ -10,3 +10,6 @@ http://ganto.xyz/vue/
     https://autumnfish.cn/song/detail?ids=${id} get
 获取歌词
     https://autumnfish.cn/lyric?id=${id} get
+
+音乐图标
+https://p3.music.126.net/Y_boJc4WTtM4tc9HMdqBIA==/109951165106062730
