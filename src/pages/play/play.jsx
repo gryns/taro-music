@@ -85,15 +85,21 @@ class Play extends Taro.Component {
 			<View className="play">
 				<View className="lyric">
 					{plat === 'weapp' && (
-						<Image className="imgbg" src={storeMusicDetail.img1v1Url || storeMusicDetail.pic} />
+						<Image
+							className="imgbg"
+							src="https://p1.music.126.net/EOSjfYkPfiuYeMjr83RtAQ==/109951164460512857.jpg"
+						/>
 					)}
 					{plat === 'h5' && (
 						<img
 							className="imgbg"
-							src={storeMusicDetail.img1v1Url || storeMusicDetail.pic}
+							src="https://p1.music.126.net/EOSjfYkPfiuYeMjr83RtAQ==/109951164460512857.jpg"
 							alt="头像"
 						/>
 					)}
+					<View className="mark"></View>
+					<View className="play play_icon"></View>
+					<View className="pause play_icon"></View>
 				</View>
 				<View className="videoControl">
 					{audioSrc && plat !== 'weapp' && (
