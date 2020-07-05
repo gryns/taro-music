@@ -3,17 +3,19 @@ import { AtSearchBar, AtList, AtListItem } from 'taro-ui'
 import { searchMusic } from '@/api'
 import LoadingPage from '@/components/PageLoading'
 import { connect } from '@tarojs/redux'
+import { transTime } from "@/filter/common.jsx"
 import './list.less'
 let inputVal = ''
 
 const mapStateToProps = (state) => ({
 	storeMusicId: state.music.storeMusicId,
-	storeNewAudio: state.music.storeNewAudio
+	storeNewAudio: state.music.storeNewAudio,
 })
 
 const mapStateDispatchToProps = (dispatch) => ({
 	handleStoreMusic: dispatch.music.handleStoreMusic,
-	handleStoreMusicDetail: dispatch.music.handleStoreMusicDetail
+	handleStoreMusicDetail: dispatch.music.handleStoreMusicDetail,
+	handleStorePlayList: dispatch.music.handleStorePlayList
 })
 @connect(mapStateToProps, mapStateDispatchToProps)
 class List extends Taro.Component {
@@ -26,7 +28,8 @@ class List extends Taro.Component {
 		listData: [],
 		loading: false,
 		current: 1,
-		pageSize: 20
+		pageSize: 20,
+		pullLoad: true
 	}
 
 	// 点击查询
@@ -38,6 +41,8 @@ class List extends Taro.Component {
 	}
 
 	handleBtnSearch = (e) => {
+		const { handleStorePlayList } = this.props
+		handleStorePlayList([]);
 		// 查询
 		this.setState(
 			{
@@ -52,6 +57,7 @@ class List extends Taro.Component {
 
 	// 获取最新数据
 	getNewestData = async (name) => {
+		const { handleStorePlayList, handleStoreMusicDetail } = this.props
 		this.setState({
 			loading: true,
 			inputValue: name
@@ -67,6 +73,19 @@ class List extends Taro.Component {
 			this.setState({
 				listData: data.result.songs
 			})
+
+			const songId = data.result.songs.map(item => item.id)
+			const songDetail = data.result.songs.map(
+				item => {
+					return {
+						name: item.artists[0].name,
+						songName: item.name
+					}
+				}
+			)
+			handleStoreMusicDetail(songDetail)
+			handleStorePlayList(songId)
+
 		} catch (error) {
 			console.log(error)
 		} finally {
@@ -88,6 +107,7 @@ class List extends Taro.Component {
 					note={item.artists[0].name}
 					thumb={item.artists[0].img1v1Url}
 					onClick={() => this.getListMusicId(item)}
+					extraText={transTime(item.duration)}
 				/>
 			)
 		})
@@ -120,15 +140,38 @@ class List extends Taro.Component {
 		}
 	}
 
+	// 点击跳转
 	getListMusicId = (item) => {
-		const { handleStoreMusic, storeNewAudio, handleStoreMusicDetail } = this.props
+		const { handleStoreMusic, storeNewAudio } = this.props
 		if (storeNewAudio) {
 			storeNewAudio.destroy()
 		}
 		handleStoreMusic(item.id)
-		handleStoreMusicDetail(item.artists[0])
+
 		Taro.navigateTo({
 			url: '/pages/play/play'
+		})
+	}
+
+	// 下拉 触发
+	handleFresherStart = (ev) => {
+
+		this.setState({
+			loading: true
+		})
+
+		setTimeout(() => {
+			this.setState({
+				pullLoad: false,
+				loading: false
+			})
+		}, 2000)
+	}
+
+	// 停止
+	handleFresherStop = () => {
+		this.setState({
+			pullLoad: true
 		})
 	}
 
@@ -139,7 +182,7 @@ class List extends Taro.Component {
 	}
 
 	render() {
-		const { inputValue, loading } = this.state
+		const { inputValue, loading, pullLoad } = this.state
 		return (
 			<View className="list">
 				<AtSearchBar
@@ -154,10 +197,14 @@ class List extends Taro.Component {
 					scrollY
 					scrollWithAnimation
 					scrollTop={0}
-					lowerThreshold={0}
+					lowerThreshold={100}
 					upperThreshold={30}
 					onScrollToLower={this.getScrollData}
 					className="searchScroll"
+					refresherEnabled
+					refresherTriggered={pullLoad}
+					onRefresherRefresh={this.handleFresherStart}
+					onRefresherRestore={this.handleFresherStop}
 				>
 					<AtList>{this.renderNewestData()}</AtList>
 				</ScrollView>

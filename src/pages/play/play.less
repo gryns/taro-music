@@ -2,27 +2,48 @@
 
 .play {
 	.lyric {
-		height: 80vh;
+		height: 60vh;
 		display: table;
 		width: 100%;
 		position: relative;
+		.bgImg {
+			position: relative;
+			.mark {
+				position: absolute;
+				width: 600px;
+				height: 600px;
+				top: 0px;
+				left: 80px;
+				background-color: rgba(0, 0, 0, 0.4);
+				box-shadow: 0 0 10px #000001;
+				border-radius: 50%;
+			}
+		}
+		.setAnimate {
+			animation: rotate 5s linear infinite;
+			@keyframes rotate {
+				from {
+					transform: rotate(0deg);
+				}
+				to {
+					transform: rotate(360deg);
+				}
+			}
+		}
+		.animatePause {
+			animation-play-state: paused;
+		}
+		.animateRuning {
+			animation-play-state: running;
+		}
 		.imgbg {
 			border-radius: 50%;
 			display: block;
 			width: 600px;
+			height: 600px;
 			margin: 40px auto;
 		}
 
-		.mark {
-			position: absolute;
-			width: 600px;
-			height: 600px;
-			top: 40px;
-			left: 80px;
-			background-color: rgba(0, 0, 0, 0.4);
-			box-shadow: 0 5px 20px #000001;
-			border-radius: 50%;
-		}
 		.play_icon {
 			position: absolute;
 			width: 600px;
@@ -31,18 +52,43 @@
 			top: 40px;
 			left: 80px;
 		}
-		// .play {
-		// 	background: url(../../images/play01.png) no-repeat center;
-		// 	background-size: 120px 120px;
-		// }
+		.play {
+			background: url(../../images/play02.png) no-repeat center;
+			background-size: 120px 120px;
+		}
 		.pause {
 			background: url(../../images/pause02.png) no-repeat center;
 			background-size: 120px 120px;
 		}
+		.name {
+			margin-top: 40px;
+			font-size: 36px;
+			text-align: center;
+			font-weight: 700;
+			color: #333333;
+		}
+		.title {
+			font-size: 28px;
+			color: #999999;
+			text-align: center;
+		}
+	}
+	.showlyric {
+		height: 25vh;
 	}
 	.videoControl {
-		height: 120px;
-		border: 1px solid @borderColor;
+		height: 10vh;
 		text-align: center;
+		.width70 {
+			height: 10vh;
+			.arrowIcon {
+				width: 80px;
+				height: 80px;
+				margin-top: 10px;
+			}
+			.userImg {
+				margin-left: 15px;
+			}
+		}
 	}
 }

@@ -1,5 +1,5 @@
 import { Component } from '@tarojs/taro'
-import { View } from '@tarojs/components'
+import { View, Button } from '@tarojs/components'
 
 import './index.less'
 

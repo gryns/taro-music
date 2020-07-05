@@ -2,7 +2,8 @@ const musci = {
 	state: {
 		storeMusicId: 167827,
 		storeNewAudio: null,
-		storeMusicDetail: null
+		storeMusicDetail: null,
+		storePlayList: []
 	},
 	reducers: {
 		// 事件
@@ -26,6 +27,14 @@ const musci = {
 			return {
 				...state,
 				storeMusicDetail: payload
+			}
+		},
+
+		// 获取播放列表
+		handleStorePlayList(state, payload) {
+			return {
+				...state,
+				storePlayList: payload
 			}
 		}
 	},

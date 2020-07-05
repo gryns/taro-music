@@ -33,7 +33,11 @@ export const searchMusic = (params) => request(`/search`, params, 'GET')
 export const getPlayMp3 = (id) => request(`/song/url?id=${id}`, {}, 'GET')
 
 // 获取详情
-export const musicDetail = (id) => request(`/detail?ids=${id}`, {}, 'GET')
+// export const musicDetail = (id) => request(`/detail?ids=${id}`, {}, 'GET')
+
+// 详情
+export const musicDetail = (id) => request(`/playlist/detail?id=${id}`, {}, 'GET')
+
 
 // 获取歌词
 export const getMusicLyric = (id) => request(`/lyric?id=${id}`, {}, 'GET')
