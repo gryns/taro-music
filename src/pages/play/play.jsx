@@ -1,4 +1,4 @@
-import Taro , {Component} from "@tarojs/taro"
+import Taro, { Component } from "@tarojs/taro"
 import { View, Audio } from '@tarojs/components'
 import { getPlayMp3, getMusicLyric } from '@/api'
 import { connect } from '@tarojs/redux'
@@ -28,6 +28,7 @@ class Play extends Component {
 	// 获取 音乐MP3
 	getMusicMp3 = async () => {
 		const { palyId } = this.state
+		clearInterval(this.timer)
 		try {
 			const data = await getPlayMp3(palyId)
 			this.setState({
@@ -95,6 +96,7 @@ class Play extends Component {
 				bgMusic.singer = storeMusicDetail[playIdIndex].name
 				// 设置了 src 之后会自动播放 , 可是支付宝 只支持 优酷的音频自动播放
 				bgMusic.src = data.data[0].url
+				console.log(bgMusic);
 
 				// 播放
 				bgMusic.play()
@@ -109,6 +111,23 @@ class Play extends Component {
 	getLyricData = async (id) => {
 		try {
 			const data = await getMusicLyric(id)
+			const lyr = data.lrc.lyric
+			let time = lyr.split("]")
+
+			console.log(time);
+
+			const txt = time.map(item => {
+				const text = item.split("[")[0]
+				return text
+			})
+
+			const minute = time.map(item => {
+				const hour = item.split("[")[1]
+				return hour
+			})
+
+			console.log(txt, minute);
+
 		} catch (error) {
 			console.log(error)
 		}
@@ -125,6 +144,13 @@ class Play extends Component {
 		bgMusicObj[btnEv]()
 	}
 
+	// 实时监听 歌曲进度
+	watchSongTime = (bgMusic) => {
+		// this.timer = setInterval(() => {
+		// 	console.log(bgMusic.currentTime);
+		// }, 1000)
+	}
+
 	// 监听 背景音乐事件
 	watchBgMusicEv = (bgMusic) => {
 		// 监听暂停
@@ -133,6 +159,7 @@ class Play extends Component {
 				playBtn: false,
 				setIsAddAnimate: false
 			})
+			clearInterval(this.timer)
 		})
 
 		// 监听播放
@@ -141,6 +168,8 @@ class Play extends Component {
 				playBtn: true,
 				setIsAddAnimate: true
 			})
+
+			this.watchSongTime(bgMusic)
 		})
 
 		// 监听上一首
@@ -148,6 +177,7 @@ class Play extends Component {
 
 		// 监听下一首
 		bgMusic.onPrev(() => this.leftRightFn('最后'))
+
 	}
 
 	// 上一首
@@ -199,6 +229,10 @@ class Play extends Component {
 		this.getLyricData(storeMusicId)
 	}
 
+	componentWillUnmount() {
+		clearInterval(this.timer)
+	}
+
 	render() {
 		const { audioSrc, plat, playBtn, name, songName, setIsAddAnimate } = this.state
 		return (
@@ -229,8 +263,8 @@ class Play extends Component {
 					{playBtn ? (
 						<View className="play play_icon"></View>
 					) : (
-						<View className="pause play_icon"></View>
-					)}
+							<View className="pause play_icon"></View>
+						)}
 					<View className="name">{name}</View>
 					<View className="title">{songName}</View>
 				</View>

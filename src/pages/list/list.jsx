@@ -140,10 +140,8 @@ class List extends Component {
 
 	// 点击跳转
 	getListMusicId = (item) => {
-		const { handleStoreMusic, storeNewAudio } = this.props
-		if (storeNewAudio) {
-			storeNewAudio.destroy()
-		}
+		const { handleStoreMusic } = this.props
+
 		handleStoreMusic(item.id)
 
 		Taro.navigateTo({
