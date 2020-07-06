@@ -114,8 +114,6 @@ class Play extends Component {
 			const lyr = data.lrc.lyric
 			let time = lyr.split("]")
 
-			console.log(time);
-
 			const txt = time.map(item => {
 				const text = item.split("[")[0]
 				return text
