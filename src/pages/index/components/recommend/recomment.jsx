@@ -4,6 +4,7 @@ import './index.less'
 import 'taro-ui/dist/style/components/flex.scss'
 import LoadingPage from '@/components/PageLoading'
 import { connect } from '@tarojs/redux'
+import Taro , {Component} from "@tarojs/taro"
 
 const mapStateToProps = (state) => ({
 	storeMusicId: state.music.storeMusicId,
@@ -15,7 +16,7 @@ const mapStateDispatchToProps = (dispatch) => ({
 	handleStoreMusicDetail: dispatch.music.handleStoreMusicDetail
 })
 @connect(mapStateToProps, mapStateDispatchToProps)
-class Recommend extends Taro.Component {
+class Recommend extends Component {
 	state = {
 		loading: false,
 		listData: []
@@ -53,7 +54,7 @@ class Recommend extends Taro.Component {
 					key={item.id}
 				>
 					<View>
-						{process.env.TARO_ENV === 'weapp' && (
+						{process.env.TARO_ENV !== 'h5' && (
 							<Image className="image" src={item.picUrl} alt="图片" />
 						)}
 						{process.env.TARO_ENV === 'h5' && (

@@ -4,7 +4,7 @@ import Taro from "@tarojs/taro"
 const URL = "https://autumnfish.cn";
 
 // 创建一个接口实例
-let http = axios.create({
+const http = axios.create({
     timeout: 10000,
     baseURL: URL,
     headers: {

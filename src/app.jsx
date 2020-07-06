@@ -1,11 +1,10 @@
+import 'taro-ui/dist/style/index.scss' // 全局引入一次即可
 import Taro, { Component } from '@tarojs/taro'
 import { Provider } from '@tarojs/redux'
 import store from './store'
 import Index from './pages/index'
 
 import './app.less'
-
-import 'taro-ui/dist/style/index.scss' // 全局引入一次即可
 
 // 如果需要在 h5 环境中开启 React Devtools
 // 取消以下注释：
@@ -35,12 +34,6 @@ class App extends Component {
 					text: '搜索',
 					iconPath: './icon/list.png',
 					selectedIconPath: './icon/listed.png'
-				},
-				{
-					pagePath: 'pages/mv/mv',
-					text: 'MV',
-					iconPath: './icon/mv.png',
-					selectedIconPath: './icon/mved.png'
 				}
 			]
 		},

@@ -38,7 +38,7 @@ const musci = {
 			}
 		}
 	},
-	effect: (dispatch) => {
+	effect: () => {
 		// async getMenuData() {
 		//     const menuData = await menu();
 		// 	dispatch.asideMenu.menu(menuData.list);

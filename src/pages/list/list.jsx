@@ -1,15 +1,16 @@
+import Taro, { Component } from '@tarojs/taro'
 import { View, ScrollView } from '@tarojs/components'
 import { AtSearchBar, AtList, AtListItem } from 'taro-ui'
 import { searchMusic } from '@/api'
 import LoadingPage from '@/components/PageLoading'
 import { connect } from '@tarojs/redux'
-import { transTime } from "@/filter/common.jsx"
+import { transTime } from '@/filter/common.jsx'
 import './list.less'
 let inputVal = ''
 
 const mapStateToProps = (state) => ({
 	storeMusicId: state.music.storeMusicId,
-	storeNewAudio: state.music.storeNewAudio,
+	storeNewAudio: state.music.storeNewAudio
 })
 
 const mapStateDispatchToProps = (dispatch) => ({
@@ -18,7 +19,7 @@ const mapStateDispatchToProps = (dispatch) => ({
 	handleStorePlayList: dispatch.music.handleStorePlayList
 })
 @connect(mapStateToProps, mapStateDispatchToProps)
-class List extends Taro.Component {
+class List extends Component {
 	config = {
 		navigationBarTitleText: '列表'
 	}
@@ -42,7 +43,7 @@ class List extends Taro.Component {
 
 	handleBtnSearch = (e) => {
 		const { handleStorePlayList } = this.props
-		handleStorePlayList([]);
+		handleStorePlayList([])
 		// 查询
 		this.setState(
 			{
@@ -74,18 +75,15 @@ class List extends Taro.Component {
 				listData: data.result.songs
 			})
 
-			const songId = data.result.songs.map(item => item.id)
-			const songDetail = data.result.songs.map(
-				item => {
-					return {
-						name: item.artists[0].name,
-						songName: item.name
-					}
+			const songId = data.result.songs.map((item) => item.id)
+			const songDetail = data.result.songs.map((item) => {
+				return {
+					name: item.artists[0].name,
+					songName: item.name
 				}
-			)
+			})
 			handleStoreMusicDetail(songDetail)
 			handleStorePlayList(songId)
-
 		} catch (error) {
 			console.log(error)
 		} finally {
@@ -154,8 +152,7 @@ class List extends Taro.Component {
 	}
 
 	// 下拉 触发
-	handleFresherStart = (ev) => {
-
+	handleFresherStart = () => {
 		this.setState({
 			loading: true
 		})

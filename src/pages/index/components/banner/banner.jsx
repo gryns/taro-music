@@ -1,4 +1,5 @@
 import { Swiper, SwiperItem, View } from '@tarojs/components'
+import Taro, { Component } from '@tarojs/taro'
 import { ApiBannerData } from '@/api'
 import './banner.less'
 import { connect } from '@tarojs/redux'
@@ -12,7 +13,7 @@ const mapStateDispatchToProps = (dispatch) => ({
 	handleStoreMusicDetail: dispatch.music.handleStoreMusicDetail
 })
 @connect(mapStateToProps, mapStateDispatchToProps)
-class BannerPage extends Taro.Component {
+class BannerPage extends Component {
 	state = {
 		bannerData: []
 	}
@@ -39,7 +40,7 @@ class BannerPage extends Taro.Component {
 			return (
 				<SwiperItem key={item.bannerId}>
 					<View>
-						{process.env.TARO_ENV === 'weapp' && (
+						{process.env.TARO_ENV !== 'h5' && (
 							<Image className="image" src={item.pic} alt="banner" />
 						)}
 						{process.env.TARO_ENV === 'h5' && (
