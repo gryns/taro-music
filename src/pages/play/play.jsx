@@ -1,4 +1,4 @@
-import Taro, { Component } from "@tarojs/taro"
+import Taro, { Component } from '@tarojs/taro'
 import { View, Audio } from '@tarojs/components'
 import { getPlayMp3, getMusicLyric } from '@/api'
 import { connect } from '@tarojs/redux'
@@ -22,7 +22,8 @@ class Play extends Component {
 		playBtn: false, // true 播放 ， false 暂停
 		palyId: this.props.storeMusicId,
 		audioSrc: '',
-		setIsAddAnimate: false
+		setIsAddAnimate: false,
+		lyricText: []
 	}
 
 	// 获取 音乐MP3
@@ -96,7 +97,7 @@ class Play extends Component {
 				bgMusic.singer = storeMusicDetail[playIdIndex].name
 				// 设置了 src 之后会自动播放 , 可是支付宝 只支持 优酷的音频自动播放
 				bgMusic.src = data.data[0].url
-				console.log(bgMusic);
+				console.log(bgMusic)
 
 				// 播放
 				bgMusic.play()
@@ -112,20 +113,21 @@ class Play extends Component {
 		try {
 			const data = await getMusicLyric(id)
 			const lyr = data.lrc.lyric
-			let time = lyr.split("]")
 
-			const txt = time.map(item => {
-				const text = item.split("[")[0]
-				return text
-			})
+			// let time = lyr.split(']')
+			// const txt = time.map((item) => {
+			// 	const text = item.split('[')[0]
+			// 	return text
+			// })
 
-			const minute = time.map(item => {
-				const hour = item.split("[")[1]
-				return hour
-			})
+			// const minute = time.map((item) => {
+			// 	const hour = item.split('[')[1]
+			// 	return hour
+			// })
 
-			console.log(txt, minute);
-
+			// this.setState({
+			// 	lyricText: txt
+			// })
 		} catch (error) {
 			console.log(error)
 		}
@@ -175,7 +177,6 @@ class Play extends Component {
 
 		// 监听下一首
 		bgMusic.onPrev(() => this.leftRightFn('最后'))
-
 	}
 
 	// 上一首
@@ -217,6 +218,14 @@ class Play extends Component {
 		}
 	}
 
+	// 渲染歌词
+	renderLyric = () => {
+		const { lyricText } = this.state
+		return lyricText.map((item, index) => {
+			return <View key={index}>{item}</View>
+		})
+	}
+
 	componentDidMount() {
 		// 获取音频  id 167827
 		const { storeMusicId } = this.props
@@ -232,7 +241,7 @@ class Play extends Component {
 	}
 
 	render() {
-		const { audioSrc, plat, playBtn, name, songName, setIsAddAnimate } = this.state
+		const { audioSrc, plat, playBtn, name, songName, setIsAddAnimate, lyricText } = this.state
 		return (
 			<View className="play">
 				<View className="lyric" onClick={this.handlePlayOrPause}>
@@ -261,27 +270,24 @@ class Play extends Component {
 					{playBtn ? (
 						<View className="play play_icon"></View>
 					) : (
-							<View className="pause play_icon"></View>
-						)}
-					<View className="name">{name}</View>
-					<View className="title">{songName}</View>
+						<View className="pause play_icon"></View>
+					)}
+					<View className="name">
+						{name}---{songName}
+					</View>
 				</View>
-				<View className="showlyric"></View>
+				<View className="showlyric">{this.renderLyric()}</View>
 				<View className="videoControl">
 					{audioSrc && plat === 'h5' && (
 						<Audio poster="poster" name="name" author="author" id="setAudioId" src={audioSrc} />
 					)}
 					{plat !== 'h5' && (
 						<View className="width70 at-row at-row__justify--center">
-							<View className="at-col at-col-2" onClick={this.handleArrowleft}>
-								<Image className="arrowIcon" src="../../images/left.png" alt="左" />
-							</View>
+							<View className="at-col at-col-2 leftImg" onClick={this.handleArrowleft}></View>
 							<View className="at-col at-col-2">
 								<AtAvatar className="userImg" image="" circle />
 							</View>
-							<View className="at-col at-col-2" onClick={this.handleArrowRight}>
-								<Image className="arrowIcon" src="../../images/right.png" alt="右" />
-							</View>
+							<View className="at-col at-col-2 rightImg" onClick={this.handleArrowRight}></View>
 						</View>
 					)}
 				</View>

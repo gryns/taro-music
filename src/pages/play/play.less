@@ -1,8 +1,9 @@
 @import '../../common/common.less';
 
 .play {
+	.layout();
 	.lyric {
-		height: 60vh;
+		height: 50vh;
 		display: table;
 		width: 100%;
 		position: relative;
@@ -75,6 +76,10 @@
 	}
 	.showlyric {
 		height: 25vh;
+		text-align: center;
+		overflow: hidden;
+		font-size: 28px;
+		color: #999999;
 	}
 	.line {
 		position: relative;
@@ -93,8 +98,17 @@
 				height: 80px;
 				margin-top: 10px;
 			}
+			.leftImg {
+				background: url(../../images/left.png) no-repeat center center;
+				background-size: 68px 68px;
+			}
+			.rightImg {
+				background: url(../../images/right.png) no-repeat center center;
+				background-size: 68px 68px;
+			}
 			.userImg {
 				margin-left: 15px;
+				margin-top: 15px;
 			}
 		}
 	}
