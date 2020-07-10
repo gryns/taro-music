@@ -195,7 +195,7 @@ class List extends Component {
 					lowerThreshold={100}
 					upperThreshold={30}
 					onScrollToLower={this.getScrollData}
-					className="searchScroll"
+					className="searchscroll"
 					refresherEnabled
 					refresherTriggered={pullLoad}
 					onRefresherRefresh={this.handleFresherStart}

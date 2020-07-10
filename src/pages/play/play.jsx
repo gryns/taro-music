@@ -23,7 +23,8 @@ class Play extends Component {
 		palyId: this.props.storeMusicId,
 		audioSrc: '',
 		setIsAddAnimate: false,
-		lyricText: []
+		lyricText: [],
+		minuteNum: []
 	}
 
 	// 获取 音乐MP3
@@ -32,13 +33,60 @@ class Play extends Component {
 		clearInterval(this.timer)
 		try {
 			const data = await getPlayMp3(palyId)
-			this.setState({
-				audioSrc: data.data[0].url
-			})
-			this.playMusic(data)
+
+			// 歌词
+			this.getLyricData(palyId)
+
+			this.setState(
+				{
+					audioSrc: data.data[0].url
+				},
+				() => {
+					// 非 h5
+					if (process.env.TARO_ENV !== 'h5') {
+						this.playMusic(data)
+					} else {
+						this.audioH5 = document.getElementById('setAudioId')
+						// h5 事件函数
+						this.h5EventFn()
+					}
+				}
+			)
 		} catch (error) {
 			console.log(error)
 		}
+	}
+
+	// h5 事件
+	h5EventFn = () => {
+		const { palyId, playBtn, setIsAddAnimate } = this.state
+		const { storeMusicDetail, storePlayList } = this.props
+		// const playIdIndex = storePlayList.indexOf(palyId)
+		const playIdIndex = '167937'
+
+		// 播放
+		this.audioH5.play()
+
+		// 播放 监听
+		this.audioH5.onplay = () => {
+			console.log('play')
+			this.watchSongTime()
+		}
+
+		// 暂停 监听
+		this.audioH5.onpause = () => {
+			console.log('pause')
+		}
+
+		// 设置 歌手和歌曲
+		this.setState({
+			// name: storeMusicDetail[playIdIndex].name,
+			// songName: storeMusicDetail[playIdIndex].songName,
+			name: '111',
+			songName: '222',
+			playBtn: !playBtn,
+			setIsAddAnimate: !setIsAddAnimate
+		})
 	}
 
 	// 监听 bgMusic 的方法
@@ -88,7 +136,6 @@ class Play extends Component {
 				bgMusicObj: bgMusic,
 				setIsAddAnimate: !setIsAddAnimate,
 				name: storeMusicDetail[playIdIndex].name,
-
 				songName: storeMusicDetail[playIdIndex].songName
 			},
 			() => {
@@ -114,20 +161,23 @@ class Play extends Component {
 			const data = await getMusicLyric(id)
 			const lyr = data.lrc.lyric
 
-			// let time = lyr.split(']')
-			// const txt = time.map((item) => {
-			// 	const text = item.split('[')[0]
-			// 	return text
-			// })
+			let time = lyr.split(']')
+			const txt = time.map((item) => {
+				const text = item.split('[')[0]
+				return text
+			})
 
-			// const minute = time.map((item) => {
-			// 	const hour = item.split('[')[1]
-			// 	return hour
-			// })
+			const minute = time.map((item) => {
+				const hour = item.split('[')[1]
+				return hour
+			})
 
-			// this.setState({
-			// 	lyricText: txt
-			// })
+			console.log(minute)
+
+			this.setState({
+				lyricText: txt,
+				minuteNum: minute
+			})
 		} catch (error) {
 			console.log(error)
 		}
@@ -141,14 +191,22 @@ class Play extends Component {
 			setIsAddAnimate: !setIsAddAnimate
 		})
 		const btnEv = playBtn ? 'pause' : 'play'
-		bgMusicObj[btnEv]()
+		if (process.env.TARO_ENV === 'h5') {
+			this.audioH5[btnEv]()
+		} else {
+			bgMusicObj[btnEv]()
+		}
 	}
 
 	// 实时监听 歌曲进度
 	watchSongTime = (bgMusic) => {
-		// this.timer = setInterval(() => {
-		// 	console.log(bgMusic.currentTime);
-		// }, 1000)
+		this.timer = setInterval(() => {
+			if (process.env.TARO_ENV === 'h5') {
+				console.log(this.audioH5.currentTime)
+			} else {
+				console.log(bgMusic.currentTime)
+			}
+		}, 1000)
 	}
 
 	// 监听 背景音乐事件
@@ -220,9 +278,15 @@ class Play extends Component {
 
 	// 渲染歌词
 	renderLyric = () => {
-		const { lyricText } = this.state
+		const { lyricText, minuteNum , activeClass } = this.state
 		return lyricText.map((item, index) => {
-			return <View key={index}>{item}</View>
+			const minute = minuteNum[index]
+			const active = activeClass === minute ? 'view active' : 'view'
+			return (
+				<View className={active} minute={minute} key={index}>
+					{item}
+				</View>
+			)
 		})
 	}
 
@@ -276,20 +340,18 @@ class Play extends Component {
 						{name}---{songName}
 					</View>
 				</View>
-				<View className="showlyric">{this.renderLyric()}</View>
+				<View className="showlyric">
+					<View className="scroll-div">{this.renderLyric()}</View>
+				</View>
 				<View className="videoControl">
-					{audioSrc && plat === 'h5' && (
-						<Audio poster="poster" name="name" author="author" id="setAudioId" src={audioSrc} />
-					)}
-					{plat !== 'h5' && (
-						<View className="width70 at-row at-row__justify--center">
-							<View className="at-col at-col-2 leftImg" onClick={this.handleArrowleft}></View>
-							<View className="at-col at-col-2">
-								<AtAvatar className="userImg" image="" circle />
-							</View>
-							<View className="at-col at-col-2 rightImg" onClick={this.handleArrowRight}></View>
+					{audioSrc && plat === 'h5' && <Audio controls={false} id="setAudioId" src={audioSrc} />}
+					<View className="width70 at-row at-row__justify--center">
+						<View className="at-col at-col-2 leftImg" onClick={this.handleArrowleft}></View>
+						<View className="at-col at-col-2">
+							<AtAvatar className="userImg" image="" circle />
 						</View>
-					)}
+						<View className="at-col at-col-2 rightImg" onClick={this.handleArrowRight}></View>
+					</View>
 				</View>
 			</View>
 		)
