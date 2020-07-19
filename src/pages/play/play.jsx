@@ -4,6 +4,7 @@ import { getPlayMp3, getMusicLyric } from '@/api'
 import { connect } from '@tarojs/redux'
 import { AtAvatar } from 'taro-ui'
 import './play.less'
+import { transSecond } from "@/filter/common"
 
 const mapSatetToProps = (state) => ({
 	storeMusicId: state.music.storeMusicId,
@@ -196,13 +197,20 @@ class Play extends Component {
 		} else {
 			bgMusicObj[btnEv]()
 		}
+		clearInterval(this.timer)
 	}
 
 	// 实时监听 歌曲进度
 	watchSongTime = (bgMusic) => {
 		this.timer = setInterval(() => {
 			if (process.env.TARO_ENV === 'h5') {
-				console.log(this.audioH5.currentTime)
+				const time = this.audioH5.currentTime
+				transSecond(time)
+
+				this.setState({
+					activeClass: transSecond(time)
+				})
+
 			} else {
 				console.log(bgMusic.currentTime)
 			}
@@ -278,12 +286,13 @@ class Play extends Component {
 
 	// 渲染歌词
 	renderLyric = () => {
-		const { lyricText, minuteNum , activeClass } = this.state
+		const { lyricText, minuteNum, activeClass } = this.state
+
 		return lyricText.map((item, index) => {
-			const minute = minuteNum[index]
-			const active = activeClass === minute ? 'view active' : 'view'
+			// const minute = minuteNum[index] && minuteNum[index].substr(0, 5)
+			// const active = activeClass === minute ? 'view active' : 'view'
 			return (
-				<View className={active} minute={minute} key={index}>
+				<View minute={minute} key={index}>
 					{item}
 				</View>
 			)
@@ -334,8 +343,8 @@ class Play extends Component {
 					{playBtn ? (
 						<View className="play play_icon"></View>
 					) : (
-						<View className="pause play_icon"></View>
-					)}
+							<View className="pause play_icon"></View>
+						)}
 					<View className="name">
 						{name}---{songName}
 					</View>
