@@ -8,6 +8,18 @@ import { transTime } from '@/filter/common.jsx'
 import './list.less'
 let inputVal = ''
 
+// 防抖函数
+// 防抖函数
+function bubble(fn, wait = 500) {
+	let timer = 0
+	return function() {
+		if (timer) clearTimeout(timer)
+		timer = setTimeout(function() {
+			fn.call(this, arguments)
+		}, wait)
+	}
+}
+
 const mapStateToProps = (state) => ({
 	storeMusicId: state.music.storeMusicId,
 	storeNewAudio: state.music.storeNewAudio
@@ -21,7 +33,8 @@ const mapStateDispatchToProps = (dispatch) => ({
 @connect(mapStateToProps, mapStateDispatchToProps)
 class List extends Component {
 	config = {
-		navigationBarTitleText: '列表'
+		navigationBarTitleText: '列表',
+		pullRefresh: true
 	}
 
 	state = {
@@ -107,6 +120,7 @@ class List extends Component {
 					onClick={() => this.getListMusicId(item)}
 					extraText={transTime(item.duration)}
 				/>
+				// <View key={item.id}>{item.name}</View>
 			)
 		})
 	}
@@ -151,6 +165,18 @@ class List extends Component {
 
 	// 下拉 触发
 	handleFresherStart = () => {
+		// Taro.startPullDownRefresh({
+		// 	success: (res) => {
+		// 		console.log("00",res)
+		// 		Taro.stopPullDownRefresh()
+		// 	},
+		// 	fail: (error) => {
+		// 		console.log(error)
+		// 	},
+		// 	complete: (lete) => {
+		// 		// console.log(lete)
+		// 	}
+		// })
 		this.setState({
 			loading: true
 		})
@@ -165,11 +191,16 @@ class List extends Component {
 
 	// 停止
 	handleFresherStop = () => {
+		console.log('停止')
 		this.setState({
 			pullLoad: true
 		})
 	}
 
+	// 开始下拉
+	pullDownStart = bubble(function() {
+		console.log(11)
+	})
 	componentDidMount() {
 		// 获取 最新 数据
 		this.getNewestData('许嵩')
@@ -177,20 +208,24 @@ class List extends Component {
 	}
 
 	render() {
-		const { inputValue, loading, pullLoad } = this.state
+		const { inputValue, loading, pullLoad, startPull } = this.state
+		const styles = startPull && {
+			overflow: 'hiddle'
+		}
 		return (
 			<View className="list">
-				<AtSearchBar
+				{/* <AtSearchBar
 					actionName="搜一下"
 					value={inputValue}
 					onChange={this.handleInputChange}
 					onActionClick={this.handleBtnSearch}
 					className="search"
 				/>
-				<View style={{ height: '42px' }}></View>
+				<View style={{ height: '42px' }}></View> */}
 				<ScrollView
 					scrollY
 					scrollWithAnimation
+					scrollAnchoring
 					scrollTop={0}
 					lowerThreshold={100}
 					upperThreshold={30}
@@ -198,10 +233,12 @@ class List extends Component {
 					className="searchscroll"
 					refresherEnabled
 					refresherTriggered={pullLoad}
+					onRefresherPulling={this.pullDownStart}
 					onRefresherRefresh={this.handleFresherStart}
 					onRefresherRestore={this.handleFresherStop}
 				>
 					<AtList>{this.renderNewestData()}</AtList>
+					{/* {this.renderNewestData()} */}
 				</ScrollView>
 				{loading && <LoadingPage />}
 			</View>

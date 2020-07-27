@@ -16,6 +16,9 @@ const mapDisToProps = (dispatch) => ({
 
 @connect(mapSatetToProps, mapDisToProps)
 class Play extends Component {
+	config = {
+		navigationBarTitleText: '播放',
+	}
 	state = {
 		bgMusicObj: null,
 		plat: process.env.TARO_ENV,
@@ -61,8 +64,8 @@ class Play extends Component {
 	h5EventFn = () => {
 		const { palyId, playBtn, setIsAddAnimate } = this.state
 		const { storeMusicDetail, storePlayList } = this.props
-		// const playIdIndex = storePlayList.indexOf(palyId)
-		const playIdIndex = '167937'
+		const playIdIndex = storePlayList.indexOf(palyId)
+		// const playIdIndex = '167937'
 
 		// 播放
 		this.audioH5.play()
@@ -80,10 +83,10 @@ class Play extends Component {
 
 		// 设置 歌手和歌曲
 		this.setState({
-			// name: storeMusicDetail[playIdIndex].name,
-			// songName: storeMusicDetail[playIdIndex].songName,
-			name: '111',
-			songName: '222',
+			name: storeMusicDetail[playIdIndex].name,
+			songName: storeMusicDetail[playIdIndex].songName,
+			// name: '111',
+			// songName: '222',
 			playBtn: !playBtn,
 			setIsAddAnimate: !setIsAddAnimate
 		})
@@ -278,12 +281,12 @@ class Play extends Component {
 
 	// 渲染歌词
 	renderLyric = () => {
-		const { lyricText, minuteNum , activeClass } = this.state
+		const { lyricText, minuteNum, activeClass } = this.state
 		return lyricText.map((item, index) => {
 			const minute = minuteNum[index]
 			const active = activeClass === minute ? 'view active' : 'view'
 			return (
-				<View className={active} minute={minute} key={index}>
+				<View className={active} minute={minute} key={item}>
 					{item}
 				</View>
 			)
